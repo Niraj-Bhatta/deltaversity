@@ -16,7 +16,7 @@ const GlobalLoader = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       setLoading(false);
-    }, 1500);
+    }, 1800);
     return () => clearTimeout(timer);
   }, []);
 
@@ -24,19 +24,19 @@ const GlobalLoader = () => {
     <AnimatePresence>
       {loading && (
         <motion.div 
-          initial={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.5 }}
+          initial={{ opacity: 1, filter: 'blur(0px)' }}
+          exit={{ opacity: 0, filter: 'blur(8px)', scale: 1.05 }}
+          transition={{ duration: 0.6, ease: "easeInOut" }}
           className="fixed inset-0 z-[100] bg-secondary flex items-center justify-center overflow-hidden"
         >
           <motion.div
-             initial={{ opacity: 0, scale: 0.9 }}
-             animate={{ opacity: 1, scale: 1.05 }}
-             transition={{ duration: 0.8, ease: "easeOut" }}
+             initial={{ opacity: 0, scale: 0.95, filter: 'blur(4px)' }}
+             animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
+             transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
              className="relative"
           >
             {/* The Text */}
-            <h1 className="text-5xl md:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-r from-gray-500 via-gray-300 to-gray-500 tracking-widest relative z-10"
+            <h1 className="text-3xl sm:text-5xl md:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-r from-gray-500 via-gray-300 to-gray-500 tracking-widest relative z-10"
                 style={{ WebkitTextStroke: '1px rgba(255,255,255,0.1)' }}>
               DELTAVERSITY
             </h1>
