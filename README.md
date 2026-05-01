@@ -38,4 +38,16 @@ Deltaversity is a modern educational platform designed to provide structured lea
 
 ---
 
-## 📂 Project Structure
+
+## ⚙️ Installation & Setup
+
+1. Clone the repository:
+```bash
+git clone https://github.com/Niraj-Bhatta/deltaversity.git```
+
+cd deltaversity
+
+npm install
+
+npm run dev
+
