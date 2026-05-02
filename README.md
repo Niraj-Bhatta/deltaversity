@@ -1,18 +1,53 @@
 
-# React + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-Currently, two official plugins are available:
+# 🎓 Deltaversity
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+Deltaversity is a modern educational platform designed to provide structured learning, blogs, and academic resources for students. It focuses on delivering a clean UI, organized content, and an interactive user experience.
 
-## React Compiler
+---
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## 🚀 Features
 
-## Expanding the ESLint configuration
+- 📚 Educational content and blog system
+- 🖥️ Responsive and modern UI design
+- 🔐 User-friendly navigation
+- 📝 Dynamic blog section
+- ⚡ Fast and optimized performance
+- 🌐 Deployed web application
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+---
+
+## 🛠️ Tech Stack
+
+### Frontend:
+- HTML
+- CSS
+- JavaScript
+- React (Vite)
+
+### Backend:
+- Node.js / PHP (update if needed)
+
+### Database:
+- MongoDB / MySQL (update if needed)
+
+### Tools & Deployment:
+- Git & GitHub
+- Vercel / Cloudflare (update if needed)
+
+---
+
+
+## ⚙️ Installation & Setup
+
+1. Clone the repository:
+```bash
+git clone https://github.com/Niraj-Bhatta/deltaversity.git```
+
+cd deltaversity
+
+npm install
+
+npm run dev
 
