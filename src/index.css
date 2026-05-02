@@ -18,3 +18,129 @@
     @apply transition-all duration-300 ease-in-out;
   }
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   Stirling Centre-Inspired Navbar Dropdowns
+═══════════════════════════════════════════════════════════════ */
+
+/* ── Wrapper ── */
+.stirling-menu-item {
+  @apply relative flex items-center;
+}
+
+/* ── Trigger Button ── */
+.stirling-menu-trigger {
+  @apply flex items-center gap-1 px-3 py-2 text-sm font-medium
+         text-gray-600 dark:text-gray-300
+         hover:text-primary dark:hover:text-primary
+         transition-colors duration-200 rounded-md
+         select-none cursor-pointer bg-transparent border-0 outline-none;
+  letter-spacing: 0.01em;
+}
+
+.stirling-menu-trigger.active,
+.stirling-menu-trigger:focus-visible {
+  @apply text-primary;
+}
+
+/* ── Animated Chevron ── */
+.stirling-chevron {
+  @apply transition-transform duration-200 opacity-70;
+  margin-top: 1px;
+}
+.stirling-chevron.rotated {
+  transform: rotate(180deg);
+}
+
+/* ── Dropdown Panel ── */
+/* Use top-full + pt-2 (no hard gap) so the hover area is continuous.
+   A ::before bridge on the wrapper covers the seam between trigger & panel. */
+.stirling-dropdown {
+  @apply absolute top-full left-1/2 z-50 pt-2
+         bg-transparent min-w-[210px];
+  transform: translateX(-50%);
+}
+
+.stirling-dropdown-inner {
+  @apply bg-white dark:bg-slate-900
+         border border-gray-100 dark:border-slate-700
+         rounded-xl overflow-hidden w-full;
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.07),
+    0 10px 30px -5px rgba(0, 0, 0, 0.12),
+    0 0 0 1px rgba(0, 0, 0, 0.03);
+}
+
+/* Transparent bridge that sits in the 8px gap between trigger bottom
+   and the visible panel, keeping mouseenter alive as cursor moves down */
+.stirling-menu-item::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  height: 8px;
+  display: none;
+}
+.stirling-menu-item:hover::after {
+  display: block;
+}
+
+/* ── Accent top bar (Stirling signature touch) ── */
+.stirling-dropdown-accent {
+  @apply h-[3px] w-full;
+  background: linear-gradient(90deg, #2563eb 0%, #7c3aed 50%, #0ea5e9 100%);
+}
+
+/* ── Link List ── */
+.stirling-dropdown-list {
+  @apply list-none m-0 p-2;
+}
+
+/* ── Individual Link ── */
+.stirling-dropdown-link {
+  @apply flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm
+         font-medium text-gray-600 dark:text-gray-300
+         hover:text-primary dark:hover:text-white
+         hover:bg-blue-50 dark:hover:bg-slate-800
+         transition-all duration-150 no-underline w-full;
+  letter-spacing: 0.005em;
+}
+
+/* ── Dot indicator ── */
+.stirling-link-dot {
+  @apply inline-block w-1.5 h-1.5 rounded-full bg-current
+         opacity-30 transition-opacity duration-150 flex-shrink-0;
+}
+.stirling-dropdown-link:hover .stirling-link-dot {
+  @apply opacity-80;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Mobile Stirling Accordion Menus
+═══════════════════════════════════════════════════════════════ */
+
+.mobile-stirling-menu {
+  @apply w-full;
+}
+
+.mobile-stirling-trigger {
+  @apply flex items-center justify-between w-full
+         px-3 py-2 text-lg font-medium
+         text-gray-700 dark:text-gray-300
+         hover:text-primary dark:hover:text-white
+         bg-transparent border-0 outline-none cursor-pointer
+         transition-colors duration-200 rounded-md;
+}
+
+.mobile-stirling-list {
+  @apply list-none m-0 pl-4 mt-1 mb-2 space-y-0.5
+         border-l-2 border-blue-100 dark:border-slate-700;
+}
+
+.mobile-stirling-link {
+  @apply block py-1.5 px-2 text-sm
+         text-gray-600 dark:text-gray-400
+         hover:text-primary dark:hover:text-white
+         transition-colors duration-150 no-underline rounded;
+}
