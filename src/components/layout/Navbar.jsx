@@ -1,59 +1,59 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Menu, X, BookOpen, ChevronDown, Globe, Sun, Moon } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '../../context/LanguageContext';
 import { useTheme } from '../../context/ThemeContext';
 
 /* ─────────────────────────────────────────────────────────────
-   Stirling-Centre-inspired dropdown data
+   Build menus dynamically so labels are translated
 ───────────────────────────────────────────────────────────── */
-const STIRLING_MENUS = {
+const buildMenus = (t) => ({
   aboutUs: {
-    label: 'About Us',
+    labelKey: 'about_us',
     items: [
-      { label: 'Our Story',            href: '#about'    },
-      { label: 'Vision & Mission',     href: '#vision'   },
-      { label: 'Values',               href: '#values'   },
-      { label: 'Partnerships',         href: '#partners' },
-      { label: 'What People Say',      href: '#reviews'  },
+      { labelKey: 'our_story',        href: '/about/our-story',     isRoute: true },
+      { labelKey: 'vision_mission',   href: '/about/vision-mission',isRoute: true },
+      { labelKey: 'values',           href: '/about/values',        isRoute: true },
+      { labelKey: 'partnerships',     href: '/about/partnership',   isRoute: true },
+      { labelKey: 'what_people_say',  href: '/about/testimonials',  isRoute: true },
     ],
   },
   ourPeople: {
-    label: 'Our People',
+    labelKey: 'our_people',
     items: [
-      { label: 'Advisory Board',       href: '#advisory'    },
-      { label: 'Academic Standards',   href: '#academic'    },
-      { label: 'Associates & Faculty', href: '#faculty'     },
-      { label: 'Core Team',            href: '/core-team',  isRoute: true },
+      { labelKey: 'advisory_board',    href: '/people/advisory-board', isRoute: true },
+      { labelKey: 'academic_standards',href: '/people/academic-standards', isRoute: true },
+      { labelKey: 'associates_faculty',href: '/people/faculty',         isRoute: true },
+      { labelKey: 'core_team',         href: '/people/core-team',       isRoute: true },
     ],
   },
   services: {
-    label: 'Services',
+    labelKey: 'services',
     items: [
-      { label: 'Higher Education Consultancy', href: '#higher-ed'    },
-      { label: 'Learning Forum',               href: '#forum'        },
-      { label: 'Transformational Travelling',  href: '#travel'       },
-      { label: 'Cultural Diplomacy',           href: '#culture'      },
-      { label: 'Language Mastery',             href: '#language'     },
+      { labelKey: null, label: 'Higher Education Consultancy', href: '#higher-ed'  },
+      { labelKey: null, label: 'Learning Forum',               href: '#forum'      },
+      { labelKey: null, label: 'Transformational Travelling',  href: '#travel'     },
+      { labelKey: null, label: 'Cultural Diplomacy',           href: '#culture'    },
+      { labelKey: null, label: 'Language Mastery',             href: '#language'   },
     ],
   },
   events: {
-    label: 'Events',
+    labelKey: 'events',
     items: [
-      { label: 'Upcoming Events',   href: '#upcoming'    },
-      { label: 'Webinars',          href: '#webinars'    },
-      { label: 'Conferences',       href: '#conferences' },
-      { label: 'Retreats',          href: '#retreats'    },
-      { label: 'Past Events',       href: '#past'        },
+      { labelKey: null, label: 'Upcoming Events', href: '#upcoming'    },
+      { labelKey: null, label: 'Webinars',         href: '#webinars'   },
+      { labelKey: null, label: 'Conferences',      href: '#conferences'},
+      { labelKey: null, label: 'Retreats',         href: '#retreats'   },
+      { labelKey: null, label: 'Past Events',      href: '#past'       },
     ],
   },
-};
+});
 
 /* ─────────────────────────────────────────────────────────────
    Stirling-Style Dropdown Component
 ───────────────────────────────────────────────────────────── */
-const StirlingDropdown = ({ menuKey, config, activeDropdown, setActiveDropdown }) => {
+const StirlingDropdown = ({ menuKey, config, activeDropdown, setActiveDropdown, t }) => {
   const isOpen = activeDropdown === menuKey;
 
   return (
@@ -68,7 +68,7 @@ const StirlingDropdown = ({ menuKey, config, activeDropdown, setActiveDropdown }
         aria-expanded={isOpen}
         aria-haspopup="true"
       >
-        {config.label}
+        {t(config.labelKey)}
         <ChevronDown size={14} className={`stirling-chevron${isOpen ? ' rotated' : ''}`} />
       </button>
 
@@ -82,9 +82,7 @@ const StirlingDropdown = ({ menuKey, config, activeDropdown, setActiveDropdown }
             className="stirling-dropdown"
             role="menu"
           >
-            {/* Inner wrapper carries shadow/border/radius; outer is the hover bridge */}
             <div className="stirling-dropdown-inner">
-              {/* Decorative top accent bar */}
               <div className="stirling-dropdown-accent" />
               <ul className="stirling-dropdown-list">
               {config.items.map((item, i) => (
@@ -97,7 +95,7 @@ const StirlingDropdown = ({ menuKey, config, activeDropdown, setActiveDropdown }
                       onClick={() => setActiveDropdown(null)}
                     >
                       <span className="stirling-link-dot" />
-                      {item.label}
+                      {item.labelKey ? t(item.labelKey) : item.label}
                     </Link>
                   ) : (
                     <a
@@ -107,13 +105,13 @@ const StirlingDropdown = ({ menuKey, config, activeDropdown, setActiveDropdown }
                       onClick={() => setActiveDropdown(null)}
                     >
                       <span className="stirling-link-dot" />
-                      {item.label}
+                      {item.labelKey ? t(item.labelKey) : item.label}
                     </a>
                   )}
                 </li>
               ))}
               </ul>
-            </div>{/* /stirling-dropdown-inner */}
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
@@ -124,7 +122,7 @@ const StirlingDropdown = ({ menuKey, config, activeDropdown, setActiveDropdown }
 /* ─────────────────────────────────────────────────────────────
    Mobile Stirling Accordion Item
 ───────────────────────────────────────────────────────────── */
-const MobileStirlingMenu = ({ menuKey, config, setIsOpen }) => {
+const MobileStirlingMenu = ({ menuKey, config, setIsOpen, t }) => {
   const [expanded, setExpanded] = useState(false);
 
   return (
@@ -134,7 +132,7 @@ const MobileStirlingMenu = ({ menuKey, config, setIsOpen }) => {
         onClick={() => setExpanded(!expanded)}
         aria-expanded={expanded}
       >
-        {config.label}
+        {t(config.labelKey)}
         <ChevronDown size={16} className={`stirling-chevron${expanded ? ' rotated' : ''}`} />
       </button>
 
@@ -156,7 +154,7 @@ const MobileStirlingMenu = ({ menuKey, config, setIsOpen }) => {
                     className="mobile-stirling-link"
                     onClick={() => setIsOpen(false)}
                   >
-                    {item.label}
+                    {item.labelKey ? t(item.labelKey) : item.label}
                   </Link>
                 ) : (
                   <a
@@ -164,7 +162,7 @@ const MobileStirlingMenu = ({ menuKey, config, setIsOpen }) => {
                     className="mobile-stirling-link"
                     onClick={() => setIsOpen(false)}
                   >
-                    {item.label}
+                    {item.labelKey ? t(item.labelKey) : item.label}
                   </a>
                 )}
               </li>
@@ -186,9 +184,12 @@ const Navbar = () => {
   const { lang, setLang, t } = useLanguage();
   const { isDark, toggleTheme } = useTheme();
   const location = useLocation();
+  const navigate = useNavigate();
   const dropdownRef = useRef(null);
 
-  // Close menus on page route change (NOT on hash/anchor changes — those are same-page scrolls)
+  const MENUS = buildMenus(t);
+
+  // Close menus on page route change
   useEffect(() => {
     setIsOpen(false);
     setActiveDropdown(null);
@@ -245,13 +246,33 @@ const Navbar = () => {
     };
   }, [isOpen]);
 
+  // Logo / Home click — always go to "/" and scroll to top
+  const handleHomeClick = () => {
+    setActiveDropdown(null);
+    setIsOpen(false);
+    if (location.pathname === '/') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
+  // Blog click — scroll to blog section if already on home, otherwise navigate
+  const handleBlogClick = (e) => {
+    if (location.pathname === '/') {
+      e.preventDefault();
+      const el = document.getElementById('blog');
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    }
+    setIsOpen(false);
+    setActiveDropdown(null);
+  };
+
   return (
     <nav className="sticky top-0 z-50 bg-white/90 dark:bg-slate-950/90 backdrop-blur-md border-b border-gray-100 dark:border-slate-800 shadow-sm transition-colors duration-300" ref={dropdownRef}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
           
-          {/* Logo — UNCHANGED */}
-          <Link to="/" className="flex-shrink-0 flex items-center gap-2" onClick={() => setActiveDropdown(null)}>
+          {/* Logo */}
+          <Link to="/" className="flex-shrink-0 flex items-center gap-2" onClick={handleHomeClick}>
             <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center text-white">
               <BookOpen size={24} />
             </div>
@@ -260,26 +281,34 @@ const Navbar = () => {
 
           {/* Desktop Menu */}
           <div className="hidden lg:flex items-center space-x-1">
-            {/* Home — UNCHANGED */}
-            <Link to="/" className="text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary font-medium smooth-transition px-3 py-2">{t('home')}</Link>
+            {/* Home */}
+            <Link
+              to="/"
+              onClick={handleHomeClick}
+              className="text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary font-medium smooth-transition px-3 py-2"
+            >
+              {t('home')}
+            </Link>
             
-            {/* ── NEW: About Us Dropdown ── */}
+            {/* About Us Dropdown */}
             <StirlingDropdown
               menuKey="aboutUs"
-              config={STIRLING_MENUS.aboutUs}
+              config={MENUS.aboutUs}
               activeDropdown={activeDropdown}
               setActiveDropdown={setActiveDropdown}
+              t={t}
             />
 
-            {/* ── NEW: Our People Dropdown ── */}
+            {/* Our People Dropdown */}
             <StirlingDropdown
               menuKey="ourPeople"
-              config={STIRLING_MENUS.ourPeople}
+              config={MENUS.ourPeople}
               activeDropdown={activeDropdown}
               setActiveDropdown={setActiveDropdown}
+              t={t}
             />
 
-            {/* Courses Dropdown — UNCHANGED */}
+            {/* Courses Dropdown */}
             <div 
               className="relative"
               onMouseEnter={() => setActiveDropdown('courses')}
@@ -324,29 +353,37 @@ const Navbar = () => {
               </AnimatePresence>
             </div>
 
-            {/* ── NEW: Services Dropdown ── */}
+            {/* Services Dropdown */}
             <StirlingDropdown
               menuKey="services"
-              config={STIRLING_MENUS.services}
+              config={MENUS.services}
               activeDropdown={activeDropdown}
               setActiveDropdown={setActiveDropdown}
+              t={t}
             />
 
-            {/* ── NEW: Events Dropdown ── */}
+            {/* Events Dropdown */}
             <StirlingDropdown
               menuKey="events"
-              config={STIRLING_MENUS.events}
+              config={MENUS.events}
               activeDropdown={activeDropdown}
               setActiveDropdown={setActiveDropdown}
+              t={t}
             />
 
-            {/* Blog — UNCHANGED */}
-            <Link to="/blog" className="text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary font-medium smooth-transition px-3 py-2">{t('blog')}</Link>
+            {/* Blog */}
+            <Link
+              to={location.pathname === '/' ? '#blog' : '/'}
+              onClick={handleBlogClick}
+              className="text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary font-medium smooth-transition px-3 py-2"
+            >
+              {t('blog')}
+            </Link>
 
-            {/* Contact — UNCHANGED */}
-            <a href="#contact" className="text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary font-medium smooth-transition px-3 py-2">{t('contact')}</a>
+            {/* Contact */}
+            <a href="/#contact" className="text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary font-medium smooth-transition px-3 py-2">{t('contact')}</a>
             
-            {/* Theme + Language — UNCHANGED */}
+            {/* Theme + Language */}
             <div className="flex items-center pl-4 border-l border-gray-200 dark:border-slate-800 gap-4">
               
               {/* Theme Switcher */}
@@ -391,17 +428,19 @@ const Navbar = () => {
             </div>
           </div>
 
-          {/* Mobile menu button — UNCHANGED */}
+          {/* Mobile menu button */}
           <div className="lg:hidden flex items-center gap-4">
             <button 
               onClick={toggleTheme}
               className="text-gray-600 dark:text-gray-300 p-2"
+              aria-label="Toggle theme"
             >
               {isDark ? <Sun size={24} /> : <Moon size={24} />}
             </button>
             <button
               onClick={() => setIsOpen(!isOpen)}
               className="text-gray-600 dark:text-gray-300 hover:text-primary focus:outline-none p-2"
+              aria-label="Toggle menu"
             >
               {isOpen ? <X size={28} /> : <Menu size={28} />}
             </button>
@@ -420,7 +459,7 @@ const Navbar = () => {
           >
             <div className="px-4 py-6 space-y-1 min-h-full pb-20">
               
-              {/* Mobile Lang Switcher — UNCHANGED */}
+              {/* Mobile Lang Switcher */}
               <div className="flex gap-2 pb-4 mb-3 border-b border-gray-100 dark:border-slate-800">
                 {languages.map((l) => (
                   <button 
@@ -433,15 +472,15 @@ const Navbar = () => {
                 ))}
               </div>
 
-              {/* Home — UNCHANGED */}
-              <Link to="/" onClick={() => setIsOpen(false)} className="block px-3 py-2 text-lg font-medium text-gray-700 dark:text-gray-300 hover:text-primary">{t('home')}</Link>
+              {/* Home */}
+              <Link to="/" onClick={() => { handleHomeClick(); setIsOpen(false); }} className="block px-3 py-2 text-lg font-medium text-gray-700 dark:text-gray-300 hover:text-primary">{t('home')}</Link>
               
-              {/* ── NEW Mobile: About Us ── */}
-              <MobileStirlingMenu menuKey="aboutUs"   config={STIRLING_MENUS.aboutUs}   setIsOpen={setIsOpen} />
-              {/* ── NEW Mobile: Our People ── */}
-              <MobileStirlingMenu menuKey="ourPeople" config={STIRLING_MENUS.ourPeople} setIsOpen={setIsOpen} />
+              {/* About Us */}
+              <MobileStirlingMenu menuKey="aboutUs"   config={MENUS.aboutUs}   setIsOpen={setIsOpen} t={t} />
+              {/* Our People */}
+              <MobileStirlingMenu menuKey="ourPeople" config={MENUS.ourPeople} setIsOpen={setIsOpen} t={t} />
 
-              {/* Courses — UNCHANGED */}
+              {/* Courses */}
               <div className="px-3 py-2">
                 <span className="block text-lg font-medium text-gray-700 dark:text-gray-300 mb-2">{t('courses')}</span>
                 <div className="pl-4 space-y-4 border-l-2 border-gray-100 dark:border-slate-800 mt-2">
@@ -458,15 +497,21 @@ const Navbar = () => {
                 </div>
               </div>
 
-              {/* ── NEW Mobile: Services ── */}
-              <MobileStirlingMenu menuKey="services" config={STIRLING_MENUS.services} setIsOpen={setIsOpen} />
-              {/* ── NEW Mobile: Events ── */}
-              <MobileStirlingMenu menuKey="events"   config={STIRLING_MENUS.events}   setIsOpen={setIsOpen} />
+              {/* Services */}
+              <MobileStirlingMenu menuKey="services" config={MENUS.services} setIsOpen={setIsOpen} t={t} />
+              {/* Events */}
+              <MobileStirlingMenu menuKey="events"   config={MENUS.events}   setIsOpen={setIsOpen} t={t} />
               
-              {/* Blog — UNCHANGED */}
-              <Link to="/blog" onClick={() => setIsOpen(false)} className="block px-3 py-2 text-lg font-medium text-gray-700 dark:text-gray-300 hover:text-primary">{t('blog')}</Link>
-              {/* Contact — UNCHANGED */}
-              <a href="#contact" onClick={() => setIsOpen(false)} className="block px-3 py-2 text-lg font-medium text-gray-700 dark:text-gray-300 hover:text-primary">{t('contact')}</a>
+              {/* Blog */}
+              <Link
+                to={location.pathname === '/' ? '#blog' : '/'}
+                onClick={(e) => { handleBlogClick(e); }}
+                className="block px-3 py-2 text-lg font-medium text-gray-700 dark:text-gray-300 hover:text-primary"
+              >
+                {t('blog')}
+              </Link>
+              {/* Contact */}
+              <a href="/#contact" onClick={() => setIsOpen(false)} className="block px-3 py-2 text-lg font-medium text-gray-700 dark:text-gray-300 hover:text-primary">{t('contact')}</a>
             </div>
           </motion.div>
         )}

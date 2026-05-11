@@ -1,18 +1,22 @@
-import React, { createContext, useState, useEffect, useContext } from 'react';
+import React, { createContext, useState, useLayoutEffect, useContext } from 'react';
 
 const ThemeContext = createContext();
 
-export const ThemeProvider = ({ children }) => {
-  const [isDark, setIsDark] = useState(() => {
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('theme');
-      if (saved) return saved === 'dark';
-      return window.matchMedia('(prefers-color-scheme: dark)').matches;
-    }
-    return false;
-  });
+// Read preference synchronously before first render.
+// Default is LIGHT — only switch to dark if the user has explicitly saved 'dark'.
+const getInitialTheme = () => {
+  if (typeof window === 'undefined') return false;
+  const saved = localStorage.getItem('theme');
+  if (saved) return saved === 'dark';
+  return false; // Default: light mode
+};
 
-  useEffect(() => {
+export const ThemeProvider = ({ children }) => {
+  const [isDark, setIsDark] = useState(getInitialTheme);
+
+  // useLayoutEffect fires synchronously BEFORE the browser paints —
+  // this prevents any flash of incorrect theme on load/toggle.
+  useLayoutEffect(() => {
     const root = window.document.documentElement;
     if (isDark) {
       root.classList.add('dark');
@@ -23,7 +27,7 @@ export const ThemeProvider = ({ children }) => {
     }
   }, [isDark]);
 
-  const toggleTheme = () => setIsDark(!isDark);
+  const toggleTheme = () => setIsDark(prev => !prev);
 
   return (
     <ThemeContext.Provider value={{ isDark, toggleTheme }}>
